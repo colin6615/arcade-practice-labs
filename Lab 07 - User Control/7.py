@@ -1,6 +1,7 @@
 """ Lab 7 - User Control 
 https://learn.arcade.academy/en/latest/labs/lab_07_user_control/user_control.html
 
+use arrow keys to move the sun. Use mouse to move the snowman
 """
 
 import arcade
@@ -8,6 +9,7 @@ import arcade
 # --- Constants ---
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+MOVEMENT_SPEED = 10
 
 # --- Create functions to draw stuff ----
 def draw_sun(x,y):
@@ -26,7 +28,7 @@ def draw_sun(x,y):
     arcade.draw_line(x, y, x-50, y-50, arcade.color.YELLOW, 3)
 
 def draw_grass():
-    """ Draw the ground """
+    """ draw grass at fixed coordinates. """
     arcade.draw_lrbt_rectangle_filled(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT / 3, arcade.color.AIR_SUPERIORITY_BLUE)
 
 
@@ -45,8 +47,9 @@ def draw_snow_person(x, y):
     arcade.draw_circle_filled(x - 15, 210 + y, 5, arcade.color.BLACK)
     arcade.draw_circle_filled(x + 15, 210 + y, 5, arcade.color.BLACK)
 
-# Make a moving snow person that the user can move around.
+
 class Moving_snow_person:
+    """ Make a moving snow person that the user can move around with their mouse. """
     def __init__(self, position_x, position_y):
 
         # Take the parameters of the init function above,
@@ -58,12 +61,41 @@ class Moving_snow_person:
         """ Draw the moving snow person with the instance variables we have. """
         draw_snow_person(x=self.position_x, 
                          y=self.position_y)
-        # arcade.draw_circle_filled(self.position_x,
-        #                          self.position_y,
-        #                          self.radius,
-        #                          self.color)
 
+class Moving_sun:
+    """ The user can move this sun with their keyboard. """
 
+    def __init__(self, position_x, position_y, change_x, change_y):
+
+        # Take the parameters of the init function above,
+        # and create instance variables out of them.
+        self.position_x = position_x
+        self.position_y = position_y
+        self.change_x = change_x
+        self.change_y = change_y
+        self.radius = 100
+
+    def draw(self):
+        """ Draw the sun with the instance variables we have. """
+        draw_sun(self.position_x, self.position_y)
+
+    def update(self):
+        # Move the sun
+        self.position_y += self.change_y
+        self.position_x += self.change_x
+
+        # See if the sun hit the edge of the screen. If so, change direction
+        if self.position_x < self.radius:
+            self.position_x = self.radius
+
+        if self.position_x > SCREEN_WIDTH - self.radius:
+            self.position_x = SCREEN_WIDTH - self.radius
+
+        if self.position_y < self.radius:
+            self.position_y = self.radius
+
+        if self.position_y > SCREEN_HEIGHT - self.radius:
+            self.position_y = SCREEN_HEIGHT - self.radius
 
 class MyGame(arcade.Window):
     """ Our Custom Window Class"""
@@ -78,8 +110,10 @@ class MyGame(arcade.Window):
         # So we just see our object, not the pointer.
         self.set_mouse_visible(False)
 
-        # Create our moving dude
+        # Create our moving snow dude & sun
         self.moving_snow_person_instance = Moving_snow_person(50, 50)
+        self.moving_sun = Moving_sun(50,50, 2, 2)
+
 
     def on_draw(self):
         self.clear()
@@ -87,12 +121,11 @@ class MyGame(arcade.Window):
         # draw the background
         arcade.set_background_color(arcade.color.DARK_BLUE)
         draw_grass()
-        draw_snow_person(150, 140)
-        draw_snow_person(450, 180)
-        draw_sun(230,300)
 
         # draw the moving stuff
         self.moving_snow_person_instance.draw()
+        self.moving_sun.draw()
+
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Called to update our objects.
@@ -100,8 +133,26 @@ class MyGame(arcade.Window):
         self.moving_snow_person_instance.position_x = x
         self.moving_snow_person_instance.position_y = y
 
+    def on_update(self, delta_time):
+        self.moving_sun.update()
 
+    def on_key_press(self, key, modifiers):
+        """ Called whenever the user presses a key. """
+        if key == arcade.key.LEFT:
+            self.moving_sun.change_x = -MOVEMENT_SPEED
+        elif key == arcade.key.RIGHT:
+            self.moving_sun.change_x = MOVEMENT_SPEED
+        elif key == arcade.key.UP:
+            self.moving_sun.change_y = MOVEMENT_SPEED
+        elif key == arcade.key.DOWN:
+            self.moving_sun.change_y = -MOVEMENT_SPEED
 
+    def on_key_release(self, key, modifiers):
+        """ Called whenever a user releases a key. """
+        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
+            self.moving_sun.change_x = 0
+        elif key == arcade.key.UP or key == arcade.key.DOWN:
+            self.moving_sun.change_y = 0
 def main():
     window = MyGame()
     arcade.run()
