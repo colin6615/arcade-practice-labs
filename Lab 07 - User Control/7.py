@@ -1,7 +1,11 @@
 """ Lab 7 - User Control 
 https://learn.arcade.academy/en/latest/labs/lab_07_user_control/user_control.html
 
-use arrow keys to move the sun. Use mouse to move the snowman
+- use arrow keys to move the sun
+- Use mouse to move the snowman
+- Sound plays if you 
+    - right click
+    - or try to move the sun off of the screen
 """
 
 import arcade
@@ -81,21 +85,30 @@ class Moving_sun:
 
     def update(self):
         # Move the sun
+        self.laser_sound = arcade.load_sound("laser.wav")
         self.position_y += self.change_y
         self.position_x += self.change_x
 
         # See if the sun hit the edge of the screen. If so, change direction
         if self.position_x < self.radius:
             self.position_x = self.radius
+            arcade.play_sound(self.laser_sound)
+
 
         if self.position_x > SCREEN_WIDTH - self.radius:
             self.position_x = SCREEN_WIDTH - self.radius
+            arcade.play_sound(self.laser_sound)
+
 
         if self.position_y < self.radius:
             self.position_y = self.radius
+            arcade.play_sound(self.laser_sound)
+
 
         if self.position_y > SCREEN_HEIGHT - self.radius:
             self.position_y = SCREEN_HEIGHT - self.radius
+            arcade.play_sound(self.laser_sound)
+
 
 class MyGame(arcade.Window):
     """ Our Custom Window Class"""
@@ -105,6 +118,9 @@ class MyGame(arcade.Window):
 
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Lab 7 - User Control")
+        
+        # Load the sound when the application starts
+        self.laser_sound = arcade.load_sound("laser.wav")
 
         # Make the mouse disappear when it is over the window.
         # So we just see our object, not the pointer.
@@ -112,8 +128,7 @@ class MyGame(arcade.Window):
 
         # Create our moving snow dude & sun
         self.moving_snow_person_instance = Moving_snow_person(50, 50)
-        self.moving_sun = Moving_sun(50,50, 2, 2)
-
+        self.moving_sun = Moving_sun(300,300, 0,0)
 
     def on_draw(self):
         self.clear()
@@ -146,6 +161,15 @@ class MyGame(arcade.Window):
             self.moving_sun.change_y = MOVEMENT_SPEED
         elif key == arcade.key.DOWN:
             self.moving_sun.change_y = -MOVEMENT_SPEED
+
+
+    def on_mouse_press(self, x, y, button, key_modifiers):
+        """
+        Called when the user presses a mouse button.
+        """
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            arcade.play_sound(self.laser_sound)
+
 
     def on_key_release(self, key, modifiers):
         """ Called whenever a user releases a key. """
