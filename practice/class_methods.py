@@ -1,6 +1,5 @@
 """
-practice using class methods. Instructions from:
-
+practice using class methods. Comments/Instructions are copy/pasted from 
 https://learn.arcade.academy/en/latest/chapters/17_class_methods/class_methods.html#review-questions
 
 08/23/2026
