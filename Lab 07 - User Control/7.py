@@ -30,23 +30,23 @@ def draw_snow_person(x, y):
     arcade.draw_circle_filled(x - 15, 210 + y, 5, arcade.color.BLACK)
     arcade.draw_circle_filled(x + 15, 210 + y, 5, arcade.color.BLACK)
 
-# Make a ball that the user can move around.
-class Ball:
-    def __init__(self, position_x, position_y, radius, color):
+# Make a moving snow person that the user can move around.
+class Moving_snow_person:
+    def __init__(self, position_x, position_y):
 
         # Take the parameters of the init function above,
         # and create instance variables out of them.
         self.position_x = position_x
         self.position_y = position_y
-        self.radius = radius
-        self.color = color
 
     def draw(self):
-        """ Draw the balls with the instance variables we have. """
-        arcade.draw_circle_filled(self.position_x,
-                                  self.position_y,
-                                  self.radius,
-                                  self.color)
+        """ Draw the moving snow person with the instance variables we have. """
+        draw_snow_person(x=self.position_x, 
+                         y=self.position_y)
+        # arcade.draw_circle_filled(self.position_x,
+        #                          self.position_y,
+        #                          self.radius,
+        #                          self.color)
 
 class MyGame(arcade.Window):
     """ Our Custom Window Class"""
@@ -61,8 +61,8 @@ class MyGame(arcade.Window):
         # So we just see our object, not the pointer.
         self.set_mouse_visible(False)
 
-        # Create our ball
-        self.ball = Ball(50, 50, 15, arcade.color.AUBURN)
+        # Create our moving dude
+        self.moving_snow_person_instance = Moving_snow_person(50, 50)
 
     def on_draw(self):
         self.clear()
@@ -72,13 +72,13 @@ class MyGame(arcade.Window):
         draw_grass()
         draw_snow_person(150, 140)
         draw_snow_person(450, 180)
-        self.ball.draw()
+        self.moving_snow_person_instance.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Called to update our objects.
         Happens approximately 60 times per second."""
-        self.ball.position_x = x
-        self.ball.position_y = y
+        self.moving_snow_person_instance.position_x = x
+        self.moving_snow_person_instance.position_y = y
 
 
 
