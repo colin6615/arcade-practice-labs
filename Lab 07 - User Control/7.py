@@ -79,10 +79,15 @@ class Moving_sun:
         self.change_y = change_y
         self.radius = 100
 
+        # load sound and make sound-playing attribute 
+        self.explosion_sound = arcade.load_sound(":resources:sounds/explosion2.wav")
+        self.explosion_sound_player = None # if sound is not playing, then this thing is None.
+
+
+
     def draw(self):
         """ Draw the sun with the instance variables we have. """
         draw_sun(self.position_x, self.position_y)
-
     def update(self):
         # Move the sun
         self.laser_sound = arcade.load_sound("laser.wav")
@@ -92,22 +97,30 @@ class Moving_sun:
         # See if the sun hit the edge of the screen. If so, change direction
         if self.position_x < self.radius:
             self.position_x = self.radius
-            arcade.play_sound(self.laser_sound)
+            # play explosion sound if sound is not already playing. This way, arcade doesn't play the explosion sound 60 times per second. Instead, arcade plays one explosion sound at a time.
+            if not self.explosion_sound_player or not self.explosion_sound_player.playing:
+                self.explosion_sound_player = arcade.play_sound(self.explosion_sound)
 
 
         if self.position_x > SCREEN_WIDTH - self.radius:
             self.position_x = SCREEN_WIDTH - self.radius
-            arcade.play_sound(self.laser_sound)
+            if not self.explosion_sound_player or not self.explosion_sound_player.playing:
+                self.explosion_sound_player = arcade.play_sound(self.explosion_sound)
+
 
 
         if self.position_y < self.radius:
             self.position_y = self.radius
-            arcade.play_sound(self.laser_sound)
+            if not self.explosion_sound_player or not self.explosion_sound_player.playing:
+                self.explosion_sound_player = arcade.play_sound(self.explosion_sound)
+
 
 
         if self.position_y > SCREEN_HEIGHT - self.radius:
             self.position_y = SCREEN_HEIGHT - self.radius
-            arcade.play_sound(self.laser_sound)
+            if not self.explosion_sound_player or not self.explosion_sound_player.playing:
+                self.explosion_sound_player = arcade.play_sound(self.explosion_sound)
+
 
 
 class MyGame(arcade.Window):
