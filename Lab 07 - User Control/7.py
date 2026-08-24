@@ -1,5 +1,5 @@
 """ Lab 7 - User Control 
-background is from https://learn.arcade.academy/en/latest/chapters/09_drawing_with_functions/drawing_with_functions.html
+https://learn.arcade.academy/en/latest/labs/lab_07_user_control/user_control.html
 
 """
 
@@ -9,7 +9,22 @@ import arcade
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-# --- Create functions to draw the background ----
+# --- Create functions to draw stuff ----
+def draw_sun(x,y):
+    arcade.draw_circle_filled(x, y, 40, arcade.color.YELLOW)
+
+    # Rays to the left, right, up, and down. 
+    arcade.draw_line(x, y, x-100, y, arcade.color.YELLOW, 3)
+    arcade.draw_line(x, y, x+100, y, arcade.color.YELLOW, 3)
+    arcade.draw_line(x, y, x, y-100, arcade.color.YELLOW, 3)
+    arcade.draw_line(x, y, x, y+100, arcade.color.YELLOW, 3)
+
+    # Diagonal rays
+    arcade.draw_line(x, y, x+50, y+50, arcade.color.YELLOW, 3)
+    arcade.draw_line(x, y, x+50, y-50, arcade.color.YELLOW, 3)
+    arcade.draw_line(x, y, x-50, y+50, arcade.color.YELLOW, 3)
+    arcade.draw_line(x, y, x-50, y-50, arcade.color.YELLOW, 3)
+
 def draw_grass():
     """ Draw the ground """
     arcade.draw_lrbt_rectangle_filled(0, SCREEN_WIDTH, 0, SCREEN_HEIGHT / 3, arcade.color.AIR_SUPERIORITY_BLUE)
@@ -48,6 +63,8 @@ class Moving_snow_person:
         #                          self.radius,
         #                          self.color)
 
+
+
 class MyGame(arcade.Window):
     """ Our Custom Window Class"""
 
@@ -67,11 +84,14 @@ class MyGame(arcade.Window):
     def on_draw(self):
         self.clear()
 
-        # --- Call functions to draw the background & ball.
+        # draw the background
         arcade.set_background_color(arcade.color.DARK_BLUE)
         draw_grass()
         draw_snow_person(150, 140)
         draw_snow_person(450, 180)
+        draw_sun(230,300)
+
+        # draw the moving stuff
         self.moving_snow_person_instance.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
