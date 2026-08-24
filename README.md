@@ -1,1 +1,1 @@
-Hello, reader. This is the stuff that I did in the python library called [arcade](https://github.com/pythonarcade/arcade)
+These are lab assignments that I coded. Instructions are from the [Arcade textbook](https://learn.arcade.academy/en/latest/index.html). I used the Python library [arcade](https://github.com/pythonarcade/arcade) for coding 2d games.
