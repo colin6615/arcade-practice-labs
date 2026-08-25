@@ -4,7 +4,7 @@ import math
 
 SPRITE_SCALING = 3
 # --- Constants ---
-COIN_COUNT = 50
+COIN_COUNT = 30
 SPRITE_SCALING_PLAYER = 2.5
 SPRITE_SCALING_COIN = 1.5
 
@@ -156,6 +156,10 @@ class MyGame(arcade.Window):
         # Put the text on the screen.
         output = "Score: " + str(self.score)
         arcade.draw_text(output, 10, 20, arcade.color.WHITE, 14)
+        if len(self.coin_list) <= 0:
+            arcade.draw_text("Game Over",
+                                        300, 300,
+                                        arcade.color.BLACK, 80)
 
     def on_mouse_motion(self, x, y, dx, dy):
         self.player_sprite.center_x = x
@@ -166,9 +170,10 @@ class MyGame(arcade.Window):
 
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
-        self.coin_list.update(delta_time)
-        self.bad_coin_list.update(delta_time)
-
+        if len(self.coin_list) > 0:
+            self.coin_list.update(delta_time)
+            self.bad_coin_list.update(delta_time)
+ 
 
         # Generate a list of all sprites that collided with the player.
         coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
