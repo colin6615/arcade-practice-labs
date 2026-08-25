@@ -26,7 +26,7 @@ class Coin(arcade.Sprite):
         self.circle_radius = 0
 
         # How fast to orbit, in radians per frame
-        self.circle_speed = 0.008
+        self.circle_speed = 0.01
 
         # Set the center of the point we will orbit around
         self.circle_center_x = 0
@@ -44,6 +44,27 @@ class Coin(arcade.Sprite):
         # Increase the angle in prep for the next round.
         self.circle_angle += self.circle_speed
 
+class Bad_coin(arcade.Sprite):
+    """
+    These coins will reduce your score!
+    """
+
+    def reset_pos(self):
+
+        # Reset the coin to a random spot above the screen
+        self.center_y = random.randrange(SCREEN_HEIGHT + 20,
+                                         SCREEN_HEIGHT + 100)
+        self.center_x = random.randrange(SCREEN_WIDTH)
+
+    def update(self, delta_time):
+
+        # Move the coin
+        self.center_y -= 1
+
+        # See if the coin has fallen off the bottom of the screen.
+        # If so, reset it.
+        if self.top < 0:
+            self.reset_pos()
 
 class MyGame(arcade.Window):
     """ Main application class. """
@@ -55,6 +76,7 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.player_list = None
         self.coin_list = None
+        self.bad_coin_list = None
 
         # Set up the player
         self.score = 0
@@ -62,7 +84,7 @@ class MyGame(arcade.Window):
 
         # load sounds from the Kenney website (https://kenney.nl/assets/sci-fi-sounds)
         self.coin_01_sound = arcade.load_sound("coin_01.ogg")
-        self.coin_bad_sound = arcade.load_sound("coin_bad.ogg")
+        self.bad_coin_sound = arcade.load_sound("bad_coin.ogg")
 
 
     def start_new_game(self):
@@ -71,6 +93,7 @@ class MyGame(arcade.Window):
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.coin_list = arcade.SpriteList()
+        self.bad_coin_list = arcade.SpriteList()
 
         # Set up the player
         self.score = 0
@@ -100,6 +123,20 @@ class MyGame(arcade.Window):
             # Add the coin to the lists
             self.coin_list.append(coin)
 
+        for i in range(COIN_COUNT):
+
+
+            # Create the coin instance
+            # Coin image from kenney.nl
+            bad_coin = Bad_coin("bad_coin.png", SPRITE_SCALING_COIN)
+
+            # Position the coin
+            bad_coin.center_x = random.randrange(SCREEN_WIDTH)
+            bad_coin.center_y = random.randrange(SCREEN_HEIGHT)
+
+            # Add the bad_coin to the lists
+            self.bad_coin_list.append(bad_coin)
+
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
 
@@ -113,6 +150,7 @@ class MyGame(arcade.Window):
 
         # Draw all the sprites.
         self.coin_list.draw()
+        self.bad_coin_list.draw()
         self.player_list.draw()
 
         # Put the text on the screen.
@@ -129,17 +167,26 @@ class MyGame(arcade.Window):
         # Call update on all sprites (The sprites don't do much in this
         # example though.)
         self.coin_list.update(delta_time)
+        self.bad_coin_list.update(delta_time)
+
 
         # Generate a list of all sprites that collided with the player.
-        hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+        coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
                                                         self.coin_list)
+        bad_coin_hit_list = arcade.check_for_collision_with_list(self.player_sprite,
+                                                        self.bad_coin_list)
 
         # Loop through each colliding sprite, remove it, and add to the score. play sound
-        for coin in hit_list:
+        for coin in coin_hit_list:
             self.score += 1
             coin.remove_from_sprite_lists()
             arcade.play_sound(self.coin_01_sound)
 
+        # same thing, but remove score if it's a bad coin.
+        for bad_coin in bad_coin_hit_list:
+            self.score -= 1
+            bad_coin.remove_from_sprite_lists()
+            arcade.play_sound(self.bad_coin_sound)
 
 
 def main():
