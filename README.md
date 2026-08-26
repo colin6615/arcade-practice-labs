@@ -1,5 +1,5 @@
-# Background info
-* During Summer 2026, I worked through the textbook [Arcade Academy - Learn Python](https://learn.arcade.academy/en/latest/index.html). I completed some of its lab assignments using the [Python library Arcade](https://github.com/pythonarcade/arcade), which is made for coding 2D arcade games. 
+I worked through the textbook [Arcade Academy - Learn Python](https://learn.arcade.academy/en/latest/index.html). I completed some of its lab assignments using [Arcade](https://github.com/pythonarcade/arcade), a Python library for coding 2D arcade games. I uploaded these lab assignments to this repository.
+# Credits
 * To improve my Python coding skills, I minimized my usage of AI to write or analyze Python code in this repository.
 * I used some graphic and audio assets from [Kenney.nl](https://kenney.nl/)
 # How to use
