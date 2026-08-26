@@ -11,6 +11,7 @@ import random
 import arcade
 SPRITE_SCALING_BOX = 0.5
 SPRITE_SCALING = 0.5
+BOX_LENGTH = 64
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -80,22 +81,51 @@ class GameView(arcade.View):
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
 
-        # trap the user with stone. don't let them escape; they must pay for their crimes.
-        for y in range(64*14, -64*8, -64):
-            for x in range(-64*4, 64*15, 64):
+        # trap the user with stone. don't let them escape. 
+        y_min = -8 * BOX_LENGTH
+        y_max = 14 * BOX_LENGTH
+        x_min = -4 * BOX_LENGTH
+        x_max = 15 * BOX_LENGTH
+        # make the vertical walls
+        for y in range(y_min, y_max, BOX_LENGTH):
+            for x in [x_min, x_max]:
                 wall = arcade.Sprite(":resources:/images/tiles/brickGrey.png", SPRITE_SCALING_BOX)
                 wall.center_x = x
-                wall.center_y = y
+                wall.center_y = y 
                 self.wall_list.append(wall)
 
+        # make the horizontal walls
+        for x in range(x_min, x_max, BOX_LENGTH):
+            for y in [y_min, y_max]:
+                wall = arcade.Sprite(":resources:/images/tiles/brickGrey.png", SPRITE_SCALING_BOX)
+                wall.center_x = x
+                wall.center_y = y 
+                self.wall_list.append(wall)
+
+        """
+        # I have no idea why, but this makes a checkerboard pattern.
+        #Make a solid rectangle of boxes 
+        for y in range(y_min, y_max, 1):
+            for x in range(x_min, x_max, 1):
+                wall = arcade.Sprite(":resources:/images/tiles/brickGrey.png", SPRITE_SCALING_BOX)
+                wall.center_x = x * BOX_LENGTH
+                wall.center_y = y * BOX_LENGTH
+                self.wall_list.append(wall)
+                
+        # Make the rectangle hollow, so the user can go inside it. But leave the shell so that the user can't escape the rectangle. 
+        for solid_wall in self.wall_list:
+            if solid_wall.center_x > (x_min+1) * BOX_LENGTH or solid_wall.center_x < (x_max-1) * BOX_LENGTH:
+                if solid_wall.center_y > (y_min+1) * BOX_LENGTH or solid_wall.center_y < (y_max-1) * BOX_LENGTH:
+                   self.wall_list.remove(solid_wall)
+        """
         
 
         # Place boxes inside a loop. 4 sets of 3 boxes.
-        for y in range(64*9, -64*3, -64*3):
-            for x in range(64*4, 64*7, 64):
+        for y in range(-3, 9, 3):
+            for x in range(4, 7, 1):
                 wall = arcade.Sprite(":resources:/images/tiles/boxCrate_double.png", SPRITE_SCALING_BOX)
-                wall.center_x = x
-                wall.center_y = y
+                wall.center_x = x * BOX_LENGTH
+                wall.center_y = y * BOX_LENGTH
                 self.wall_list.append(wall)
 
 
