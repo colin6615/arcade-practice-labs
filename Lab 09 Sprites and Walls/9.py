@@ -12,6 +12,10 @@ import arcade
 SPRITE_SCALING_BOX = 0.5
 SPRITE_SCALING = 0.5
 BOX_LENGTH = 64
+SPRITE_SCALING_COIN = 0.3
+
+
+NUMBER_OF_COINS = 50
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -50,6 +54,8 @@ class GameView(arcade.View):
         # Sprite lists
         self.player_list = None
         self.wall_list = None
+        self.coin_list = None
+
 
         # Set up the player
         self.player_sprite = None
@@ -71,6 +77,7 @@ class GameView(arcade.View):
         # Sprite lists
         self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList() 
+        self.coin_list = arcade.SpriteList()
 
         # Set up the player
         self.player_sprite = arcade.Sprite(
@@ -81,20 +88,21 @@ class GameView(arcade.View):
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
 
-        # trap the user with stone. don't let them escape. 
+        # trap the user in a hollow box. don't let them escape. 
         y_min = -8 * BOX_LENGTH
         y_max = 14 * BOX_LENGTH
         x_min = -4 * BOX_LENGTH
         x_max = 15 * BOX_LENGTH
-        # make the vertical walls
-        for y in range(y_min, y_max, BOX_LENGTH):
+
+        # make the 2 vertical walls
+        for y in range(y_min-1, y_max, BOX_LENGTH):
             for x in [x_min, x_max]:
                 wall = arcade.Sprite(":resources:/images/tiles/brickGrey.png", SPRITE_SCALING_BOX)
                 wall.center_x = x
                 wall.center_y = y 
                 self.wall_list.append(wall)
 
-        # make the horizontal walls
+        # make the 2 horizontal walls
         for x in range(x_min, x_max, BOX_LENGTH):
             for y in [y_min, y_max]:
                 wall = arcade.Sprite(":resources:/images/tiles/brickGrey.png", SPRITE_SCALING_BOX)
@@ -103,7 +111,8 @@ class GameView(arcade.View):
                 self.wall_list.append(wall)
 
         """
-        # I have no idea why, but this makes a checkerboard pattern.
+        # I have no idea why, but this makes a checkerboard pattern. I was trying to make a hollow box.
+
         #Make a solid rectangle of boxes 
         for y in range(y_min, y_max, 1):
             for x in range(x_min, x_max, 1):
@@ -128,11 +137,50 @@ class GameView(arcade.View):
                 wall.center_y = y * BOX_LENGTH
                 self.wall_list.append(wall)
 
+        # -- Randomly place coins where there are no walls
+        # Create the coins
+        for i in range(NUMBER_OF_COINS):
+
+            # Create the coin instance
+            # Coin image from kenney.nl
+            coin = arcade.Sprite(
+                ":resources:images/items/coinGold.png",
+                scale=SPRITE_SCALING_COIN,
+            )
+
+            # Boolean variable if we successfully placed the coin
+            coin_placed_successfully = False
+
+            # Keep trying until success
+            while not coin_placed_successfully:
+                # Position the coin. 
+                HALF_BOX = BOX_LENGTH * 0.5
+                x_start = int(x_min + HALF_BOX)
+                x_stop = int(x_max - HALF_BOX)
+                y_start = int(y_min + HALF_BOX)
+                y_stop = int(y_max - HALF_BOX)
+                
+                coin.center_x = random.randrange(x_start, x_stop)
+                coin.center_y = random.randrange(y_start, y_stop)
+
+                # See if the coin is hitting a wall
+                wall_hit_list = arcade.check_for_collision_with_list(coin, self.wall_list)
+
+                # See if the coin is hitting another coin
+                coin_hit_list = arcade.check_for_collision_with_list(coin, self.coin_list)
+
+                if len(wall_hit_list) == 0 and len(coin_hit_list) == 0:
+                    # It is!
+                    coin_placed_successfully = True
+
+            # Add the coin to the lists
+            self.coin_list.append(coin)
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
         # Set the background color
         self.background_color = arcade.color.AMAZON
+        
 
     def on_draw(self):
         """
@@ -148,6 +196,8 @@ class GameView(arcade.View):
         # Draw all the sprites.
         self.wall_list.draw() 
         self.player_list.draw()
+        self.coin_list.draw()
+
 
         # Draw the box that we work to make sure the user stays inside of.
         # This is just for illustration purposes. You'd want to remove this

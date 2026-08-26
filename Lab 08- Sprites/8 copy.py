@@ -98,7 +98,7 @@ class MyGame(arcade.Window):
         # Set up the player
         self.score = 0
 
-        # Character image from kenney.nl
+        # Character image from Kenney website: https://kenney.nl
         self.player_sprite = arcade.Sprite("character.png", SPRITE_SCALING_PLAYER)
         self.player_sprite.center_x = 50
         self.player_sprite.center_y = 70
@@ -107,7 +107,7 @@ class MyGame(arcade.Window):
         for i in range(COIN_COUNT):
 
             # Create the coin instance
-            # Coin image from kenney.nl
+            # Coin image from Kenney website: https://kenney.nl
             coin = Coin("coin_01.png", SPRITE_SCALING_COIN)
 
             # Position the center of the circle the coin will orbit
@@ -127,7 +127,7 @@ class MyGame(arcade.Window):
 
 
             # Create the coin instance
-            # Coin image from kenney.nl
+            # Coin image from Kenney website: https://kenney.nl
             bad_coin = Bad_coin("bad_coin.png", SPRITE_SCALING_COIN)
 
             # Position the coin

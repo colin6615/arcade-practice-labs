@@ -6,6 +6,8 @@ https://learn.arcade.academy/en/latest/labs/lab_07_user_control/user_control.htm
 - Sound plays if you 
     - right click
     - or try to move the sun off of the screen
+
+- The snowman and sun drawings are from the textbook examples.
 """
 
 import arcade
@@ -89,8 +91,11 @@ class Moving_sun:
         """ Draw the sun with the instance variables we have. """
         draw_sun(self.position_x, self.position_y)
     def update(self):
-        # Move the sun
+        # load laser sound. I think its from the Kenney website, https://kenney.nl/
+        # but idk. the instructions just gave me this file and they didn't tell me where it came from.
         self.laser_sound = arcade.load_sound("laser.wav")
+
+        # Move the sun
         self.position_y += self.change_y
         self.position_x += self.change_x
 
