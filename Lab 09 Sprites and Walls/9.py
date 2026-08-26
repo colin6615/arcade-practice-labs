@@ -80,15 +80,24 @@ class GameView(arcade.View):
         self.player_sprite.center_y = 512
         self.player_list.append(self.player_sprite)
 
+        # trap the user with stone. don't let them escape; they must pay for their crimes.
+        for y in range(64*14, -64*8, -64):
+            for x in range(-64*4, 64*15, 64):
+                wall = arcade.Sprite(":resources:/images/tiles/brickGrey.png", SPRITE_SCALING_BOX)
+                wall.center_x = x
+                wall.center_y = y
+                self.wall_list.append(wall)
 
-        # Place boxes inside a loop. 
+        
+
+        # Place boxes inside a loop. 4 sets of 3 boxes.
         for y in range(64*9, -64*3, -64*3):
-            # Now make it 3 wide in x/horizontal direciton
-            for x in range(0, 64*3, 64):
+            for x in range(64*4, 64*7, 64):
                 wall = arcade.Sprite(":resources:/images/tiles/boxCrate_double.png", SPRITE_SCALING_BOX)
                 wall.center_x = x
                 wall.center_y = y
                 self.wall_list.append(wall)
+
 
         self.physics_engine = arcade.PhysicsEngineSimple(self.player_sprite, self.wall_list)
 
